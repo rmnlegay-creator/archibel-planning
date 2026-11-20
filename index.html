@@ -760,8 +760,12 @@ function waitFor(test, ms){
   return new Promise(res => { if (test()) return res(true); const t0 = Date.now();
     const iv = setInterval(() => { if (test()){ clearInterval(iv); res(true); } else if (Date.now() - t0 > (ms || 10000)){ clearInterval(iv); res(false); } }, 120); });
 }
+let portalKey = "";
 function renderPortal(){
   const b = $("pBody"); const P = S.portal;
+  const key = [S.role, P.step, P.email, P.err, P.msg, S.myReq ? S.myReq.status : "", S.offlineMsg || ""].join("|");
+  if (key === portalKey && b.firstChild) return;
+  portalKey = key;
   if (S.role === "offline"){
     b.replaceChildren(h("h3",{text:"Le planning n’est pas joignable"}), h("p",{text: S.offlineMsg || "Vérifie ta connexion internet puis recharge la page."}));
     return;
